@@ -37,7 +37,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 
-        final String CREATE_TABLE_DATA= " CREATE TABLE " + DATA_TABLE + " ( "  + P_ID + " INTEGER PRIMARY KEY AUTOINCREMENT " +
+        final String CREATE_TABLE_DATA= " CREATE TABLE " + DATA_TABLE + " ( "  + 
                                          INVOICENO + " INTEGER  , " + DATE + " TEXT , " + TOTAL_AMOUNT + " REAL " + " ) ;" ;
 
         sqLiteDatabase.execSQL(CREATE_TABLE_DATA);
