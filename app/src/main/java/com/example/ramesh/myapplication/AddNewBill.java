@@ -1,8 +1,12 @@
 package com.example.ramesh.myapplication;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +25,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.ramesh.myapplication.database.DataBaseHelper;
+import com.example.ramesh.myapplication.database.com.example.ramesh.model.DataBaseHelper1;
 import com.example.ramesh.myapplication.database.com.example.ramesh.model.DataModel;
+import com.example.ramesh.myapplication.database.com.example.ramesh.model.com.example.ramesh.adapter.Model;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,30 +37,32 @@ import java.util.Random;
 
 public class AddNewBill extends AppCompatActivity  implements View.OnClickListener{
 
+
+    //classes referances
     Context context;
     DataBaseHelper dataBaseHelper;
+    DataBaseHelper1 dataBaseHelper1;
+    SQLiteDatabase db;
+    Model model;
+
+    //ui/ux referances
     TableLayout tv , tb;
-    Button add,edit,generateBill ,delete;
-
-
-
-
-    double val1,val,pr1,pr2;
-    int billNumber;
-
+    Button add,edit,generateBill ,delete ,ok;
     AutoCompleteTextView ed ,ed1;
-
-
-    TextView tv2 , date , bill_no,tv3 ,tv4 ,total ,tv5,tv6,tv7;
-
+    TextView tv2 , date , bill_no,tv3 ,tv4 ,total ,tv5,tv6,tv7, tamount;
+    TableRow tr , tr1;
 
 
 
+   // variables referances
+    double val1;
+    int billNumber ,qnty;
+    String name;
+    double price, amount ,grandTotal;
     static String[] ITEMS;
 
-    double grandTotal ,grandTotal1;
 
-TableRow tr , tr1;
+
   ;
 
 
@@ -63,51 +71,100 @@ TableRow tr , tr1;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_bill);
 
+        //ui/ux inti
         add=(Button)findViewById(R.id.additem);
-
         total=(TextView)findViewById(R.id.totalamount);
         tv2=new TextView(this);
-         tv4=new TextView(this);
+        tv4=new TextView(this);
         tr=new TableRow(this);
-        tr.setClickable(true);
-
-        tr.setOnClickListener(this);
-     ITEMS=new String[]{ "shirt1" ,"shirt2" ,"shirt3" ,"shirt4" ,"shirt5" ,"pant1" ,"pant2" ,"pant3" ,"pant4" ,"pant5"};
-        add.setOnClickListener(this);
-        //edit=(Button)findViewById(R.id.edit);
-//        edit.setOnClickListener(this);
-        dataBaseHelper=new DataBaseHelper(this);
+        tamount = (TextView) findViewById(R.id.textView10);
         generateBill=(Button)findViewById(R.id.genbill);
-        generateBill.setOnClickListener(this);
         date=(TextView)findViewById(R.id.date);
+        bill_no=(TextView)findViewById(R.id.bill_no);
+        tv=(TableLayout)findViewById(R.id.tablelayout);
+        ok = (Button) findViewById(R.id.ok);
+
+
+        //var intia
+        ITEMS=new String[]{ "shirt1" ,"shirt2" ,"shirt3" ,"shirt4" ,"shirt5" ,"pant1" ,"pant2" ,"pant3" ,"pant4" ,"pant5"};
         String dt=new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         date.setText(dt);
-     bill_no=(TextView)findViewById(R.id.bill_no);
-
-
-        tv=(TableLayout)findViewById(R.id.tablelayout);
-        //delete=(Button)findViewById(R.id.delete);
-        //delete.setOnClickListener(this);
-
-
         int min = 65;
         int max = 80;
-
         Random r = new Random();
-      billNumber = r.nextInt(max - min + 1) + min;
+        billNumber = r.nextInt(max - min + 1) + min;
         bill_no.setText(String.valueOf(billNumber));
-        tr.setVisibility(View.GONE);
+        qnty = 0;
 
-//        dataModels=dataBaseHelper.getAllData();
-     layoutSet();
+
+        //ui/ux listner
+        add.setOnClickListener(this);
+        tamount.setOnClickListener(this);
+        generateBill.setOnClickListener(this);
+        tr.setVisibility(View.GONE);
+        ok.setOnClickListener(this);
+
+        //classes inti
+        model=new Model();
+        dataBaseHelper=new DataBaseHelper(this);
+        dataBaseHelper1=new DataBaseHelper1(this);
+
 
     }
+
+//    private void showDialog()
+//    {
+//        AlertDialog.Builder builder=new AlertDialog.Builder(this).setTitle("Are You Sure To Delete This Data")
+//                                           .setMessage("Delete")
+//                                            .setPositiveButton("Ok" , new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                                    Activity.setDialogResult(true);
+//                                                }
+//                                            });
+//        AlertDialog dialog=builder.create();
+//        dialog.show();
+//    }
+ //listners
+    private View.OnClickListener mCorkyListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            View row=(View)v.getParent();
+            ViewGroup vg=(ViewGroup)row.getParent();
+
+            vg.removeView(row);
+            vg.invalidate();
+            long id = row.getId();
+            dataBaseHelper1.deleteDataTemp(new Model(id));
+
+
+        }
+    };
+
+    private View.OnClickListener corkyListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            // do something when the button is clicked
+            tv5.setCursorVisible(true);
+            tv5.setFocusableInTouchMode(true);
+            tv5.setInputType(InputType.TYPE_CLASS_NUMBER);
+            tv5.requestFocus();
+            tv5.setFocusable(true);
+            tv5.setEnabled(true);
+            tv5.setClickable(true);
+            tv5.setCursorVisible(true);
+            tv5.setFocusableInTouchMode(true);
+            View row = (View) v.getParent();
+            ViewGroup vg = (ViewGroup) row.getParent();
+            long id = row.getId();
+            dataBaseHelper1.updateDataTemp(new Model(id));
+
+        }
+    };
+
 
     @Override
     public void onClick(View view) {
 
         if (view == add) {
-
 
             tr1 = new TableRow(this);
             tr1.setClickable(true);
@@ -116,55 +173,26 @@ TableRow tr , tr1;
             tv6 = new TextView(this);
             tv7 = new TextView(this);
             ed1 = new AutoCompleteTextView(this);
+            delete=new Button(this);
+            edit=new Button(this);
+            tv5.setText(String.valueOf(qnty));
             layoutSet1();
-            edit.setOnClickListener(this);
-            delete.setOnClickListener(this);
-            if (view==edit)
-            {
-                tv2.setCursorVisible(true);
-                tv2.setFocusableInTouchMode(true);
-                tv2.setInputType(InputType.TYPE_CLASS_NUMBER);
-                tv2.requestFocus();
-                tv2.setFocusable(true);
-                tv2.setEnabled(true);
-                tv2.setClickable(true);
+            delete.setOnClickListener(mCorkyListener);
+            edit.setOnClickListener(corkyListener);
 
-                tv2.setCursorVisible(true);
-                tv2.setFocusableInTouchMode(true);
-
-
-                tv2.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        tv2.setText(String.valueOf(1));
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        tv2.setText("");
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-
-                    }
-                });
 
 
             }
-            else if (view==delete)
-            {
-                if (view == tr1) {
-                    view.setBackgroundColor(Color.GRAY);
-                    tr1.removeAllViews();
-                }
-            }
 
-        }
+
 
 
         else if (view == generateBill) {
+
+
+            db = dataBaseHelper1.getWritableDatabase();
+            int it = dataBaseHelper1.DATA_BASE_VAERSION + 1;
+            dataBaseHelper1.onUpgrade(db, dataBaseHelper1.DATA_BASE_VAERSION, it);
 
             bill_no.setText(String.valueOf(billNumber));
             int billno = Integer.parseInt(bill_no.getText().toString());
@@ -176,163 +204,31 @@ TableRow tr , tr1;
             dataBaseHelper.getAllData();
             Log.e("Dr","Data Get......");
             Intent i = new Intent(AddNewBill.this, MainActivity.class);
-
-            //i.putExtra("nu" ,billNumber);
             startActivity(i);
+        }
+
+
+
+        else if (view == tamount)
+        {
+            double i = dataBaseHelper1.sumDataTemp();
+            total.setText(String.valueOf(i));
+        }
+
+        else if (view == ok) {
+            Model d = new Model(name, qnty, price, amount);
+            long tablerowid;
+            tablerowid = dataBaseHelper1.saveDataTemp(d);
+            d.setId(tablerowid);
+
+            tr1.setId((int) d.getId());
         }
     }
 
 
 
 
-    public void layoutSet()
-    {
-
-        TableLayout.LayoutParams params=new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(40,0,0,0);
-
-        TableRow.LayoutParams layoutParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(30,10,5,0);
-
-       ed=new AutoCompleteTextView(this);
-        ed.setWidth(150);
-
-
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,ITEMS);
-        ed.setAdapter(adapter);
-      ed.setThreshold(2);
-
-
-        tr.addView(ed,layoutParams);
-
 //
-
-
-        ed.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
-
-
-
-
-            }
-
-
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.toString().equals("shirt1"))
-                {
-                    tv3.setText(String.valueOf(200.99));
-
-                }
-                else if (editable.toString().equals("shirt2"))
-                {
-                    tv3.setText(String.valueOf(300));
-                }
-
-                else if (editable.toString().equals("shirt3"))
-                {
-                    tv3.setText(String.valueOf(400));
-                }
-                else if (editable.toString().equals("shirt4"))
-                {
-                    tv3.setText(String.valueOf(500));
-                }
-                else if (editable.toString().equals("shirt5"))
-                {
-                    tv3.setText(String.valueOf(600));
-                }
-                else if (editable.toString().equals("pant1"))
-                {
-                    tv3.setText(String.valueOf(700));
-                }
-                else if (editable.toString().equals("pant2"))
-                {
-                    tv3.setText(String.valueOf(800));
-                }
-                else if (editable.toString().equals("pant3"))
-                {
-                    tv3.setText(String.valueOf(999.99));
-                }
-                else if (editable.toString().equals("pant4"))
-                {
-                    tv3.setText(String.valueOf(150));
-                }
-                else
-                {
-                    tv3.setText(String.valueOf(250));
-                }
-
-
-
-                 double p=Double.parseDouble(
-                        tv3.getText().toString() );
-                int qn=Integer.parseInt(tv2.getText().toString());
-                double va=p*qn;
-                tv4.setText(String.valueOf(va));
-                 val1=va;
-
-
-                 double grandTotl1=0;
-                grandTotl1=grandTotl1+val1;
-                grandTotal=grandTotl1;
-                total.setText(String.valueOf(grandTotl1));
-
-
-
-            }
-        });
-
-
-
-
-
-
-        tv2.setWidth(70);
-        tv2.setText(String.valueOf(1));
-
-        tr.addView(tv2,layoutParams);
-
-
-
-
-
-
-        ed.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        tv3=new TextView(this);
-
-        tv3.setWidth(70);
-
-        tr.addView(tv3,layoutParams);
-
-
-
-
-
-        tv4.setWidth(70);
-
-        tr.addView(tv4,layoutParams);
-        tv.addView(tr,params);
-    }
-
 
     public void layoutSet1()
     {
@@ -345,18 +241,13 @@ TableRow tr , tr1;
 
         ed1=new AutoCompleteTextView(this);
         ed1.setWidth(130);
-// array adapter
+
+      // array adapter
 
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,ITEMS);
         ed1.setAdapter(adapter);
         ed1.setThreshold(2);
-
-
         tr1.addView(ed1,layoutParams);
-
-
-
-
         ed1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -366,13 +257,7 @@ TableRow tr , tr1;
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-
-
-
-
             }
-
-
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -419,44 +304,48 @@ TableRow tr , tr1;
                     tv6.setText(String.valueOf(250));
                 }
 
+                price=Double.parseDouble(tv6.getText().toString() );
+            }
+        });
 
+        tv5.addTextChangedListener(new TextWatcher() {
+            String x;
+            @Override
 
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                tv5.setText(String.valueOf(qnty));
+                x=(charSequence.toString());
 
-              double  p2=Double.parseDouble(tv6.getText().toString() );
-               int  qnt1=Integer.parseInt(tv5.getText().toString());
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
 
-                double va=p2*qnt1;
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                tv5.removeTextChangedListener(this);
+                if (tv5.isInEditMode())
+                {
+                    tv5.setText(( x + " "));
+                }
+
+                tv5.addTextChangedListener(this);
+
+                qnty =Integer.parseInt(tv5.getText().toString());
+
+                double va=price*qnty;
                 tv7.setText(String.valueOf(va));
-                val=va;
-
-
-
-
-
+                amount=(Double.parseDouble(tv7.getText().toString()));
 
             }
         });
 
-
-        grandTotal1= grandTotal1+grandTotal+val;
-        total.setText(String.valueOf(grandTotal1));
-
-
-
-
-
         tv5.setWidth(40);
         tv5.setText(String.valueOf(1));
-
         tr1.addView(tv5,layoutParams);
-
-
-
-
-
-
         ed1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -473,12 +362,8 @@ TableRow tr , tr1;
         tv6.setWidth(70);
 
         tr1.addView(tv6,layoutParams);
-
-
-
-
-
         tv7.setWidth(70);
+        name = ed1.getText().toString();
 
         tr1.addView(tv7,layoutParams);
         edit=new Button(this);
@@ -491,14 +376,6 @@ TableRow tr , tr1;
 
         tv.addView(tr1,params);
     }
-
-
-
-
-
-
-
-
 }
 
 

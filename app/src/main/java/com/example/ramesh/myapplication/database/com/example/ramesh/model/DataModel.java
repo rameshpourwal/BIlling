@@ -5,13 +5,9 @@ package com.example.ramesh.myapplication.database.com.example.ramesh.model;
  */
 
 public class DataModel {
-     public  int billNo ;
+    public  int billNo ;
    public String date;
     public  double price;
-
-
-
-
 
 
     public DataModel() {

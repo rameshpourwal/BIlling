@@ -46,30 +46,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(rvAdapter);
 
-//        // The number of Columns
-//        layoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(layoutManager);
-
-       //adapter = new GridAdapter(MainActivity.this, arrayList);
-
-
-//
-
-//        recyclerView.setAdapter(rvAdapter);
-
-
-
-
-//        dataBaseHelper.saveItem(new ItemModel("shirt1" ,200.99));
-//        dataBaseHelper.saveItem(new ItemModel("shirt2", 300));
-//        dataBaseHelper.saveItem(new ItemModel("shirt3", 400));
-//        dataBaseHelper.saveItem(new ItemModel("shirt4", 500));
-//        dataBaseHelper.saveItem(new ItemModel("shirt5", 600));
-//        dataBaseHelper.saveItem(new ItemModel("pant1", 700));
-//        dataBaseHelper.saveItem(new ItemModel("pant2", 800));
-//        dataBaseHelper.saveItem(new ItemModel("pant3", 999.99));
-//        dataBaseHelper.saveItem(new ItemModel("pant4", 150));
-//        dataBaseHelper.saveItem(new ItemModel("pant5", 250));
         new_bill=(Button)findViewById(R.id.newbill);
 
 

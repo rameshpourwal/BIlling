@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddNewBill"/>
+        <activity android:name=".AddNewBill" />
+        <activity android:name=".database.Temp"></activity>
     </application>
 
 </manifest>

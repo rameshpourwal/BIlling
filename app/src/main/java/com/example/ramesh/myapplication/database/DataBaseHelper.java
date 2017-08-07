@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 import com.example.ramesh.myapplication.database.com.example.ramesh.model.DataModel;
+import com.example.ramesh.myapplication.database.com.example.ramesh.model.com.example.ramesh.adapter.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +21,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final  int DATA_BASE_VAERSION=2;
     public static final String DATA_BASE_NAME="demo";
-//    public static final String ITEM_TABLE="item";
-//    public static final String  ID="id";
-//    public static final String  ITEM_NAME="shirt_name";
-//    public static final String ITEM_PRICE="shirt_price";
     public static final String  DATA_TABLE="data";
-    public static  final  String ID="id";
+    public static  final  String P_ID="id";
     public static final String INVOICENO="invoiceNo";
     public static final String DATE="date";
-    public static final String AMOUNT="amount";
+    public static final String TOTAL_AMOUNT="total_amount";
 
 
     public DataBaseHelper(Context context) {
@@ -38,14 +35,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-//        final String CREATE_ITEM_TABLE=  "CREATE TABLE " + ITEM_TABLE + " ( " +ID + " INTEGER PRIMARY KEY AUTOINCREMENT ," + ITEM_NAME +
-//                                          " TEXT ," + ITEM_PRICE + " INTEGER " + ") " ;
-//         sqLiteDatabase.execSQL(CREATE_ITEM_TABLE);
 
-        final String CREATE_TABLE_DATA= " CREATE TABLE " + DATA_TABLE + " ( "  +
-                                         INVOICENO + " INTEGER , " + DATE + " TEXT , " + AMOUNT + " REAL " + " ) ;" ;
+
+        final String CREATE_TABLE_DATA= " CREATE TABLE " + DATA_TABLE + " ( "  + P_ID + " INTEGER PRIMARY KEY AUTOINCREMENT " +
+                                         INVOICENO + " INTEGER  , " + DATE + " TEXT , " + TOTAL_AMOUNT + " REAL " + " ) ;" ;
 
         sqLiteDatabase.execSQL(CREATE_TABLE_DATA);
+
+
 
 
 
@@ -55,39 +52,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
-    //crude operation for saving items in table
 
-//    public  void saveItem(ItemModel itemModel)
-//    {
-//        SQLiteDatabase db=this.getWritableDatabase();
-//        ContentValues values=new ContentValues();
-//        values.put(ITEM_NAME,itemModel.getName());
-//        values.put(ITEM_PRICE,itemModel.getPrice());
-//        db.insert(ITEM_TABLE,null,values);
-//        db.close();
-//
-//    }
-
-//    public List<ItemModel> getAllItems()
-//    {
-//        List<ItemModel> items=new ArrayList<>();
-//        String query="SELECT * FROM " + ITEM_TABLE;
-//        SQLiteDatabase db=this.getReadableDatabase();
-//        Cursor cursor=db.rawQuery(query,null);
-//        if (cursor.moveToFirst())
-//        {
-//            do
-//                {
-//                    ItemModel model=new ItemModel();
-//                    //model.setId(Integer.parseInt(cursor.getString(0)));
-//                    model.setName(cursor.getString(1));
-//                    //model.setPrice(Double.parseDouble(cursor.getString(2)));
-//                    items.add(model);
-//                } while (cursor.moveToNext());
-//
-//            }
-//            return  items;
-//        }
 
 
         public void saveData( DataModel dataModel)
@@ -98,7 +63,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
            // values.put(ID,dataModel.getId());
             values.put(INVOICENO,dataModel.getBillNo());
             values.put(DATE,dataModel.getDate());
-            values.put(AMOUNT,dataModel.getPrice());
+            values.put(TOTAL_AMOUNT,dataModel.getPrice());
             db.insert(DATA_TABLE,null,values);
             db.close();
 
@@ -116,9 +81,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             {
                 DataModel model=new DataModel();
                // model.setId(Integer.parseInt(cursor.getString(0)));
-                model.setBillNo(Integer.parseInt(cursor.getString(1)));
-                model.setDate(cursor.getString(2));
-                model.setPrice(Double.parseDouble(cursor.getString(3)));
+                model.setBillNo(Integer.parseInt(cursor.getString(0)));
+                model.setDate(cursor.getString(1));
+                model.setPrice(Double.parseDouble(cursor.getString(2)));
                 //model.setPrice(Double.parseDouble(cursor.getString(2)));
                 items.add(model);
             } while (cursor.moveToNext());
